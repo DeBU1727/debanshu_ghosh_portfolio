@@ -74,9 +74,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Handle multiple comma-separated origins
+        // Handle multiple comma-separated origins with whitespace cleaning
         List<String> originsList = (allowedOrigins != null && !allowedOrigins.isEmpty()) 
-                                   ? Arrays.asList(allowedOrigins.split(",")) 
+                                   ? Arrays.stream(allowedOrigins.split(","))
+                                           .map(String::trim)
+                                           .filter(o -> !o.isEmpty())
+                                           .toList()
                                    : Collections.singletonList("http://localhost:5173");
         configuration.setAllowedOriginPatterns(originsList);
 
