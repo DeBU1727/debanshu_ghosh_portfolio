@@ -28,15 +28,15 @@ public class TestimonialController {
     @PutMapping("/{id}")
     public Testimonial updateTestimonial(@PathVariable Long id, @RequestBody Testimonial testimonialDetails) {
         Testimonial testimonial = testimonialRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Testimonial not found with id: " + id));
-        
+                .orElseThrow(() -> new RuntimeException("Testimonial not found with id: " + id));
+
         testimonial.setClientName(testimonialDetails.getClientName());
         testimonial.setClientRole(testimonialDetails.getClientRole());
         testimonial.setContent(testimonialDetails.getContent());
         testimonial.setAvatarUrl(testimonialDetails.getAvatarUrl());
         testimonial.setCompany(testimonialDetails.getCompany());
         testimonial.setRating(testimonialDetails.getRating());
-        
+
         return testimonialRepository.save(testimonial);
     }
 

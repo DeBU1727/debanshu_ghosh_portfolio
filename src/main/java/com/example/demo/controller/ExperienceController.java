@@ -33,14 +33,14 @@ public class ExperienceController {
     @PutMapping("/{id}")
     public Experience updateExperience(@PathVariable Long id, @RequestBody Experience experienceDetails) {
         Experience experience = experienceRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Experience not found with id: " + id));
-        
+                .orElseThrow(() -> new RuntimeException("Experience not found with id: " + id));
+
         experience.setCompany(experienceDetails.getCompany());
         experience.setRole(experienceDetails.getRole());
         experience.setDetails(experienceDetails.getDetails());
         experience.setDuration(experienceDetails.getDuration());
         experience.setCertificateUrl(experienceDetails.getCertificateUrl());
-        
+
         return experienceRepository.save(experience);
     }
 

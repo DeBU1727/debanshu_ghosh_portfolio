@@ -19,7 +19,7 @@ public class ProjectController {
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
-    
+
     @GetMapping("/count")
     public long getProjectCount() {
         return projectRepository.count();
@@ -33,15 +33,15 @@ public class ProjectController {
     @PutMapping("/{id}")
     public Project updateProject(@PathVariable Long id, @RequestBody Project projectDetails) {
         Project project = projectRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
-        
+                .orElseThrow(() -> new RuntimeException("Project not found with id: " + id));
+
         project.setTitle(projectDetails.getTitle());
         project.setDescription(projectDetails.getDescription());
         project.setImageUrl(projectDetails.getImageUrl());
         project.setProjectUrl(projectDetails.getProjectUrl());
         project.setGithubUrl(projectDetails.getGithubUrl());
         project.setTechStack(projectDetails.getTechStack());
-        
+
         return projectRepository.save(project);
     }
 

@@ -27,10 +27,9 @@ public class ContactController {
 
             // 2. Send email notification asynchronously (or synchronously for now)
             emailService.sendContactEmail(
-                savedMessage.getName(),
-                savedMessage.getEmail(),
-                savedMessage.getMessage()
-            );
+                    savedMessage.getName(),
+                    savedMessage.getEmail(),
+                    savedMessage.getMessage());
 
             return ResponseEntity.ok().body("{\"message\": \"Message sent successfully\"}");
         } catch (Exception e) {

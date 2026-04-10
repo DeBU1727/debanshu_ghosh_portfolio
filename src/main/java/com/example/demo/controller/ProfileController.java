@@ -21,7 +21,7 @@ public class ProfileController {
         try {
             java.util.Map uploadResult = cloudinaryService.uploadResource(file, "resumes", "raw");
             String secureUrl = (String) uploadResult.get("secure_url");
-            
+
             Profile profile = getProfile();
             profile.setResumeUrl(secureUrl);
             return profileRepository.save(profile);
@@ -49,7 +49,7 @@ public class ProfileController {
             newProfile.setName("Default");
             return newProfile;
         });
-        
+
         profile.setResumeUrl(profileDetails.getResumeUrl());
         return profileRepository.save(profile);
     }
@@ -64,7 +64,8 @@ public class ProfileController {
         return getResumeResponse("inline");
     }
 
-    private org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> getResumeResponse(String disposition) {
+    private org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> getResumeResponse(
+            String disposition) {
         try {
             Profile profile = getProfile();
             if (profile.getResumeUrl() == null || profile.getResumeUrl().isEmpty()) {
@@ -76,11 +77,13 @@ public class ProfileController {
             byte[] data = in.readAllBytes();
             in.close();
 
-            org.springframework.core.io.ByteArrayResource resource = new org.springframework.core.io.ByteArrayResource(data);
+            org.springframework.core.io.ByteArrayResource resource = new org.springframework.core.io.ByteArrayResource(
+                    data);
 
             return org.springframework.http.ResponseEntity.ok()
                     .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, disposition + "; filename=\"Resume_Debanshu_Ghosh.pdf\"")
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                            disposition + "; filename=\"Resume_Debanshu_Ghosh.pdf\"")
                     .body(resource);
         } catch (Exception e) {
             return org.springframework.http.ResponseEntity.internalServerError().build();

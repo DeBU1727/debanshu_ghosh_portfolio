@@ -28,13 +28,13 @@ public class EducationController {
     @PutMapping("/{id}")
     public Education updateEducation(@PathVariable Long id, @RequestBody Education educationDetails) {
         Education education = educationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Education not found with id: " + id));
-        
+                .orElseThrow(() -> new RuntimeException("Education not found with id: " + id));
+
         education.setSchool(educationDetails.getSchool());
         education.setDegree(educationDetails.getDegree());
         education.setDuration(educationDetails.getDuration());
         education.setDetails(educationDetails.getDetails());
-        
+
         return educationRepository.save(education);
     }
 

@@ -28,13 +28,13 @@ public class CertificationController {
     @PutMapping("/{id}")
     public Certification updateCertification(@PathVariable Long id, @RequestBody Certification certificationDetails) {
         Certification certification = certificationRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Certification not found with id: " + id));
-        
+                .orElseThrow(() -> new RuntimeException("Certification not found with id: " + id));
+
         certification.setTitle(certificationDetails.getTitle());
         certification.setOrganization(certificationDetails.getOrganization());
         certification.setIssueDate(certificationDetails.getIssueDate());
         certification.setCredentialUrl(certificationDetails.getCredentialUrl());
-        
+
         return certificationRepository.save(certification);
     }
 

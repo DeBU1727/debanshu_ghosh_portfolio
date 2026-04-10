@@ -29,8 +29,7 @@ public class SecurityConfig {
 
     private final JWTAuthenticationFilter jwtAuthFilter;
 
-    @Value("${cors.allowed.origins}")
-    private String allowedOrigins;
+    // CORS is now handled globally in the permissive configuration below
 
     @Autowired
     public SecurityConfig(JWTAuthenticationFilter jwtAuthFilter) {
@@ -59,8 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/contact/**").permitAll()
                         .requestMatchers("/api/health/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -68,14 +66,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Handle multiple comma-separated origins
-        List<String> originsList = Arrays.asList(allowedOrigins.split(","));
-        configuration.setAllowedOriginPatterns(originsList);
-        
+
+        // Permissive Global CORS Configuration
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(false); // Credentials cannot be used with "*" origin
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -83,4 +80,3 @@ public class SecurityConfig {
         return source;
     }
 }
-
