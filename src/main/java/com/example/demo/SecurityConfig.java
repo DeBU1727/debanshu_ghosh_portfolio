@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/contact/**").permitAll()
                         .requestMatchers("/api/health/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/portfolio-profile").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/portfolio-profile/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/experience/**").permitAll()
@@ -74,7 +75,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Handle multiple comma-separated origins
-        List<String> originsList = Arrays.asList(allowedOrigins.split(","));
+        List<String> originsList = (allowedOrigins != null && !allowedOrigins.isEmpty()) 
+                                   ? Arrays.asList(allowedOrigins.split(",")) 
+                                   : Collections.singletonList("http://localhost:5173");
         configuration.setAllowedOriginPatterns(originsList);
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
