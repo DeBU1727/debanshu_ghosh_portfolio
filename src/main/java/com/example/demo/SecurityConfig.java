@@ -13,11 +13,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +37,18 @@ public class SecurityConfig {
     @Autowired
     public SecurityConfig(JWTAuthenticationFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers(HttpMethod.GET, "/api/portfolio-profile")
+                .requestMatchers(HttpMethod.GET, "/api/portfolio-profile/**")
+                .requestMatchers(HttpMethod.GET, "/api/projects/**")
+                .requestMatchers(HttpMethod.GET, "/api/experience/**")
+                .requestMatchers(HttpMethod.GET, "/api/education/**")
+                .requestMatchers(HttpMethod.GET, "/api/skills/**")
+                .requestMatchers(HttpMethod.GET, "/api/achievements/**");
     }
 
     @Bean
@@ -91,5 +105,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        return new CorsFilter(corsConfigurationSource());
     }
 }
