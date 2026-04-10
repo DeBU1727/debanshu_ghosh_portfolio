@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/portfolio-profile")
-@CrossOrigin(origins = "*")
 public class ProfileController {
 
     @Autowired
@@ -32,23 +31,13 @@ public class ProfileController {
 
     @GetMapping
     public Profile getProfile() {
-        return profileRepository.findById(1L).orElseGet(() -> {
-            Profile defaultProfile = new Profile();
-            defaultProfile.setId(1L);
-            defaultProfile.setName("Default");
-            defaultProfile.setResumeUrl("");
-            return profileRepository.save(defaultProfile);
-        });
+        return profileRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Profile not found. Please ensure DataInitializer has run."));
     }
 
     @PutMapping
     public Profile updateProfile(@RequestBody Profile profileDetails) {
-        Profile profile = profileRepository.findById(1L).orElseGet(() -> {
-            Profile newProfile = new Profile();
-            newProfile.setId(1L);
-            newProfile.setName("Default");
-            return newProfile;
-        });
+        Profile profile = getProfile();
 
         profile.setResumeUrl(profileDetails.getResumeUrl());
         return profileRepository.save(profile);
