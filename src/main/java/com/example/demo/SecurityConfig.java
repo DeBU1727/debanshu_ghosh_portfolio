@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -40,22 +39,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers(HttpMethod.GET, "/api/portfolio-profile")
-                .requestMatchers(HttpMethod.GET, "/api/portfolio-profile/**")
-                .requestMatchers(HttpMethod.GET, "/api/projects/**")
-                .requestMatchers(HttpMethod.GET, "/api/experience/**")
-                .requestMatchers(HttpMethod.GET, "/api/education/**")
-                .requestMatchers(HttpMethod.GET, "/api/skills/**")
-                .requestMatchers(HttpMethod.GET, "/api/achievements/**");
-    }
-
-    @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin = User.builder()
                 .username("admin")
-                .password("{noop}admin") // Not used for JWT, but satisfies Spring Security
+                .password("{noop}admin")
                 .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(admin);
@@ -88,13 +75,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Handle multiple comma-separated origins with whitespace cleaning
-        List<String> originsList = (allowedOrigins != null && !allowedOrigins.isEmpty()) 
-                                   ? Arrays.stream(allowedOrigins.split(","))
-                                           .map(String::trim)
-                                           .filter(o -> !o.isEmpty())
-                                           .toList()
-                                   : Collections.singletonList("http://localhost:5173");
+        List<String> originsList = (allowedOrigins != null && !allowedOrigins.isEmpty())
+                ? Arrays.stream(allowedOrigins.split(","))
+                        .map(String::trim)
+                        .filter(o -> !o.isEmpty())
+                        .toList()
+                : Collections.singletonList("http://localhost:5173");
         configuration.setAllowedOriginPatterns(originsList);
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
