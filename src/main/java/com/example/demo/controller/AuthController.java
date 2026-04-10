@@ -17,8 +17,12 @@ public class AuthController {
     @PostMapping("/otp/generate")
     public ResponseEntity<?> generateOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        authService.generateAndSendOtp(email);
-        return ResponseEntity.ok(Map.of("message", "OTP sent successfully"));
+        try {
+            authService.generateAndSendOtp(email);
+            return ResponseEntity.ok(Map.of("message", "OTP sent successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(Map.of("message", e.getMessage()));
+        }
     }
 
     @PostMapping("/otp/verify")

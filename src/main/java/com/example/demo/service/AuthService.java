@@ -22,10 +22,7 @@ public class AuthService {
 
     public void generateAndSendOtp(String email) {
         User user = userRepository.findByEmail(email)
-            .orElseGet(() -> {
-                User newUser = new User(email, "ADMIN");
-                return userRepository.save(newUser);
-            });
+            .orElseThrow(() -> new RuntimeException("This email is not authorized for admin access."));
 
         String otp = String.format("%06d", new Random().nextInt(999999));
         user.setOtp(otp);
