@@ -31,7 +31,8 @@ public class ProfileController {
 
     @GetMapping
     public Profile getProfile() {
-        return profileRepository.findById(1L)
+        return profileRepository.findAll().stream()
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("Profile not found. Please ensure DataInitializer has run."));
     }
 

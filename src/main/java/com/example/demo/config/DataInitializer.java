@@ -14,10 +14,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Ensure Profile ID 1 exists on startup to prevent race conditions in controllers
-        if (profileRepository.findById(1L).isEmpty()) {
+        // Ensure at least one profile exists on startup
+        if (profileRepository.count() == 0) {
             Profile profile = new Profile();
-            profile.setId(1L);
             profile.setName("Admin");
             profile.setResumeUrl("");
             profileRepository.save(profile);
