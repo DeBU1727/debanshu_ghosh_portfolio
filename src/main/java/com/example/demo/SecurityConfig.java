@@ -29,7 +29,8 @@ public class SecurityConfig {
 
     private final JWTAuthenticationFilter jwtAuthFilter;
 
-    // CORS is now handled globally in the permissive configuration below
+    @Value("${cors.allowed.origins:http://localhost:5173,http://localhost:5174}")
+    private String allowedOrigins;
 
     @Autowired
     public SecurityConfig(JWTAuthenticationFilter jwtAuthFilter) {
@@ -57,7 +58,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/contact/**").permitAll()
                         .requestMatchers("/api/health/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/portfolio-profile/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/projects/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/experience/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/education/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/skills/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/achievements/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -67,12 +73,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Permissive Global CORS Configuration
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        // Handle multiple comma-separated origins
+        List<String> originsList = Arrays.asList(allowedOrigins.split(","));
+        configuration.setAllowedOriginPatterns(originsList);
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(false); // Credentials cannot be used with "*" origin
+        configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
